@@ -25,7 +25,7 @@ async function generateJoke(userId) {
   try {
     // Attempt to call Hugging Face API for joke generation
     const response = await axios.post(
-      "https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium",
+      "https://api-inference.huggingface.co/models/gpt2",
       { inputs: prompt },
       {
         headers: {
@@ -36,6 +36,7 @@ async function generateJoke(userId) {
     );
 
     const joke = response.data[0]?.generated_text?.trim();
+    console.log(joke);
     if (!joke) throw new Error("No joke returned");
 
     // Store the new joke in jokes.json
