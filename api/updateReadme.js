@@ -24,15 +24,35 @@ const markdown = latest
   .map(j => `- 🗓️ ${new Date(j.timestamp).toLocaleString()} — ${j.joke}`)
   .join("\n");
 
-// Load the README
-// const readmePath = path.resolve(process.cwd(), "README.md");
-const readme = fs.readFileSync("/home/runner/work/serverless-joke-api/serverless-joke-api/README.md", "utf-8");
+// Get safe repo root path in all environments
+const repoRoot = process.env.GITHUB_WORKSPACE || path.resolve(__dirname, "..");
+
+const readmePath = path.join(repoRoot, "README.md");
+const jokesPath = path.join(repoRoot, "api", "jokes.json");
+
+try {
+  const readme = fs.readFileSync(readmePath, "utf-8");
+  const jokesRaw = fs.readFileSync(jokesPath, "utf-8");
+  const jokes = JSON.parse(jokesRaw || "[]");
+
+  // Sort and get latest 5
+  jokes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  const latest = jokes.slice(0, 5);
+  const markdown = latest
+    .map(j => `- 🗓️ ${new Date(j.timestamp).toLocaleString()} — ${j.joke}`)
+    .join("\n");
 
 // Replace the placeholder section
 const newReadme = readme.replace(
-  /<!-- JOKES_START -->[\s\S]*?<!-- JOKES_END -->/,
-  `<!-- JOKES_START -->\n${markdown}\n<!-- JOKES_END -->`
-);
+    /<!-- JOKES_START -->[\s\S]*?<!-- JOKES_END -->/,
+    `<!-- JOKES_START -->\n${markdown}\n<!-- JOKES_END -->`
+    );
 
-// Write it back
-fs.writeFileSync(readmePath, newReadme, "utf-8");
+    // Write it back
+    fs.writeFileSync(readmePath, newReadme, "utf-8");
+
+    console.log("✅ README updated with latest jokes!");
+} catch (error) {
+  console.error("❌ Failed to update README:", error.message);
+  process.exit(1);
+}
