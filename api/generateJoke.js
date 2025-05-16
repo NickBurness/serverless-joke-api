@@ -24,9 +24,9 @@ async function generateJoke(userId) {
   try {
   const words = getRandomWords();
   const prompt = `You are a joke bot. Only output a JSON object like this:
-                  {"joke": "Here goes the joke using all words."}
+                  {"JOKE": "Here goes the joke using all words."}
                   Do not add commentary or explanation.
-                  Now, write a joke that includes these words: ${words.join(", ")}.
+                  Now, write a joke based upon these words: ${words.join(", ")}.
                   Only respond with the JSON object.`;
 
   const client = new InferenceClient(process.env.HF_API_TOKEN);
@@ -43,19 +43,24 @@ async function generateJoke(userId) {
   });
 
   const joke = chatCompletion.choices?.[0]?.message?.content?.trim();
-  if (!joke) throw new Error("No joke returned from DeepSeek-R1");
+
+  // Extract joke from response using regex
+  const jokeMatch = rawResponse.match(/JOKE:\s*(.*)/i);
+  const jokePart = jokeMatch ? jokeMatch[1].trim() : rawResponse.trim();
+
+  if (!joke) throw new Error("No joke returned from LLM");
 
   // Store the new joke in jokes.json
   const newJoke = {
     timestamp: new Date().toISOString(),
     words,
-    joke,
+    jokePart,
   };
 
   fs.writeFileSync(jokesPath, JSON.stringify([...JSON.parse(fs.readFileSync(jokesPath)), newJoke], null, 2));
   fs.writeFileSync(jokesCachePath, JSON.stringify([newJoke], null, 2));
 
-  console.log("Joke added successfully:", joke);
+  console.log("Joke added successfully:", jokePart);
   return { joke: newJoke };
 
 } catch (error) {
