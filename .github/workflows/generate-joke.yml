@@ -12,6 +12,15 @@ jobs:
       - name: 📥 Checkout repo
         uses: actions/checkout@v3
 
+      - name: Debug current directory and list files
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "Files in root:"
+          ls -la
+          echo "Files in api/"
+          ls -la api/
+
       - name: 🟢 Setup Node.js
         uses: actions/setup-node@v3
         with:
