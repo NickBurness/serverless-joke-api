@@ -34,6 +34,9 @@ jobs:
         env:
           HF_API_KEY: ${{ secrets.HF_API_KEY }}
 
+      - name: Check files in root
+        run: ls -la
+
       - name: 📝 Update README with latest jokes
         run: node api/updateReadme.js
 
