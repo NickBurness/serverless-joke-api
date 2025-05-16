@@ -23,46 +23,41 @@ async function generateJoke(userId) {
   const prompt = `Create a funny joke using the words: ${words.join(", ")}`;
 
   try {
-    // Attempt to call Hugging Face API for joke generation
-    const response = await axios.post(
-      "https://api-inference.huggingface.co/models/gpt2",
-      { inputs: prompt },
+  const { InferenceClient } = require("@huggingface/inference");
+  const HF_API_TOKEN = process.env.HF_API_TOKEN;
+
+  const client = new InferenceClient(HF_API_TOKEN);
+
+  const chatCompletion = await client.chatCompletion({
+    provider: "novita",
+    model: "deepseek-ai/DeepSeek-R1",
+    messages: [
       {
-        headers: {
-          Authorization: `Bearer ${process.env.HF_API_TOKEN}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+        role: "user",
+        content: `Tell me a funny joke using the words: ${words.join(", ")}`,
+      },
+    ],
+  });
 
-    const joke = response.data[0]?.generated_text?.trim();
-    console.log(joke);
-    if (!joke) throw new Error("No joke returned");
+  const joke = chatCompletion.choices?.[0]?.message?.content?.trim();
+  if (!joke) throw new Error("No joke returned from DeepSeek-R1");
 
-    // Store the new joke in jokes.json
-    const newJoke = {
-      timestamp: new Date().toISOString(),
-      words,
-      joke,
-    };
+  // Store the new joke in jokes.json
+  const newJoke = {
+    timestamp: new Date().toISOString(),
+    words,
+    joke,
+  };
 
-    // Update the jokes cache and json file
-    fs.writeFileSync(jokesPath, JSON.stringify([...JSON.parse(fs.readFileSync(jokesPath)), newJoke], null, 2));
-    fs.writeFileSync(jokesCachePath, JSON.stringify([newJoke], null, 2));
+  fs.writeFileSync(jokesPath, JSON.stringify([...JSON.parse(fs.readFileSync(jokesPath)), newJoke], null, 2));
+  fs.writeFileSync(jokesCachePath, JSON.stringify([newJoke], null, 2));
 
-    console.log("Joke added successfully:", joke);
+  console.log("Joke added successfully:", joke);
+  return { joke: newJoke };
 
-    return { joke: newJoke };
-  } catch (error) {
-    // If Hugging Face returns a 429, fallback to random joke
-    if (error.response && error.response.status === 429) {
-      console.log("Hugging Face API rate-limited (429). Returning random joke.");
-      return { joke: getRandomJokeFromFile() };
-    }
-
-    console.error("Failed to generate joke:", error.message);
-    return { message: "Sorry, there was an error generating the joke. Please try again later." };
-  }
-}
+} catch (error) {
+  console.error("Failed to generate joke:", error.message);
+  return { message: "Sorry, there was an error generating the joke. Please try again later." };
+}}
 
 module.exports = generateJoke;
