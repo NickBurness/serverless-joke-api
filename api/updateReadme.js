@@ -26,7 +26,7 @@ const markdown = latest
 
 // Load the README
 // const readmePath = path.resolve(process.cwd(), "README.md");
-const readme = fs.readFileSync("/home/runner/work/serverless-joke-api/README.md", "utf-8");
+const readme = fs.readFileSync("/home/runner/work/serverless-joke-api/serverless-joke-api/README.md", "utf-8");
 
 // Replace the placeholder section
 const newReadme = readme.replace(
