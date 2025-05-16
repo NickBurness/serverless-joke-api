@@ -1,4 +1,4 @@
-import { InferenceClient } from "@huggingface/inference";
+const { InferenceClient } = require("@huggingface/inference");
 
 const fs = require("fs");
 const axios = require("axios");
