@@ -15,6 +15,4 @@ This is a serverless joke generation API that:
 
 <!-- JOKES_START -->
 
-_No jokes yet — be the first to trigger the API!_
-
 <!-- JOKES_END -->
