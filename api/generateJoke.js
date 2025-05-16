@@ -19,15 +19,9 @@ async function generateJoke(userId) {
     return { message: "Rate limit exceeded. Please try again later." };
   }
 
-  const words = getRandomWords();
-  const prompt = `Create a funny joke using the words: ${words.join(", ")}`;
 
   try {
-  const { InferenceClient } = require("@huggingface/inference");
-  const HF_API_TOKEN = process.env.HF_API_TOKEN;
-
-  const client = new InferenceClient(HF_API_TOKEN);
-
+  const words = getRandomWords();
   const prompt = `You are a joke bot. Only output a JSON object like this:
                   {"joke": "Here goes the joke using all words."}
                   Do not add commentary or explanation.
