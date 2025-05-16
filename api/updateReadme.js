@@ -1,23 +1,38 @@
 const fs = require("fs");
+const path = require("path");
 
-const jokes = JSON.parse(fs.readFileSync("api/jokes.json", "utf-8"));
-const readmePath = "README.md";
+const jokesFilePath = path.join(__dirname, "jokes.json");
 
-// Get last 5 jokes (most recent last)
-const latestJokes = jokes.slice(-5).reverse();
+//  read of jokes.json with fallback to empty array
+let jokes = [];
+try {
+  const fileContent = fs.readFileSync(jokesFilePath, "utf-8");
+  jokes = JSON.parse(fileContent || "[]");
+} catch (err) {
+  console.warn("Could not parse jokes.json, using empty list.");
+  jokes = [];
+}
 
-const jokeLines = latestJokes.map(joke => {
-  return `- **${new Date(joke.timestamp).toLocaleString()}**: ${joke.joke}`;
-}).join("\n");
+// Sort by newest first
+jokes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
-// Replace section in README.md
-let readme = fs.readFileSync(readmePath, "utf-8");
+// Take last 5
+const latest = jokes.slice(0, 5);
 
-const newSection = `<!-- RECENT_JOKES_START -->\n${jokeLines}\n<!-- RECENT_JOKES_END -->`;
-const updatedReadme = readme.replace(
-  /<!-- RECENT_JOKES_START -->([\s\S]*?)<!-- RECENT_JOKES_END -->/,
-  newSection
+// Format for README
+const markdown = latest
+  .map(j => `- 🗓️ ${new Date(j.timestamp).toLocaleString()} — ${j.joke}`)
+  .join("\n");
+
+// Load the README
+const readmePath = path.join(__dirname, "..", "README.md");
+const readme = fs.readFileSync(readmePath, "utf-8");
+
+// Replace the placeholder section
+const newReadme = readme.replace(
+  /<!-- JOKES_START -->[\s\S]*?<!-- JOKES_END -->/,
+  `<!-- JOKES_START -->\n${markdown}\n<!-- JOKES_END -->`
 );
 
-fs.writeFileSync(readmePath, updatedReadme);
-console.log("README updated with latest jokes.");
+// Write it back
+fs.writeFileSync(readmePath, newReadme, "utf-8");
