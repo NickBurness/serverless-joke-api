@@ -27,7 +27,7 @@ const markdown = latest
 // Get safe repo root path in all environments
 const repoRoot = process.env.GITHUB_WORKSPACE || path.resolve(__dirname, "..");
 
-const readmePath = path.join(repoRoot, "README.md");
+const readmePath = path.join(repoRoot, "readme.md");
 const jokesPath = path.join(repoRoot, "api", "jokes.json");
 
 try {
