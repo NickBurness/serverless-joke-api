@@ -1,0 +1,66 @@
+{
+  "info": {
+    "name": "Joke API",
+    "description": "A simple API to generate and fetch jokes using Hugging Face and GitHub Actions",
+    "_postman_id": "a8b28767-2d90-47a3-b346-df121b44a0f2",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Generate Joke",
+      "request": {
+        "url": {
+          "raw": "https://api.github.com/repos/NickBurness/serverless-joke-api/actions/workflows/generate-joke.yml/dispatches",
+          "protocol": "https",
+          "host": ["api", "github", "com"],
+          "path": [
+            "repos",
+            "NickBurness",
+            "joke-api-serverless",
+            "actions",
+            "workflows",
+            "generate-joke.yml",
+            "dispatches"
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{your_github_token}}",
+            "description": "Your GitHub personal access token"
+          },
+          {
+            "key": "Accept",
+            "value": "application/vnd.github.v3+json",
+            "description": "GitHub API version"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"ref\": \"main\"}"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Jokes",
+      "request": {
+        "url": {
+          "raw": "https://raw.githubusercontent.com/NickBurness/joke-api-serverless/main/api/jokes.json",
+          "protocol": "https",
+          "host": ["raw", "github", "usercontent", "com"],
+          "path": [
+            "NickBurness",
+            "serverless-joke-api",
+            "main",
+            "api",
+            "jokes.json"
+          ]
+        },
+        "method": "GET"
+      },
+      "response": []
+    }
+  ]
+}
