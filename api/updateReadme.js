@@ -25,8 +25,9 @@ const markdown = latest
   .join("\n");
 
 // Load the README
-const readmePath = path.join(__dirname, "..", "README.md");
+const readmePath = path.resolve(process.cwd(), "README.md");
 const readme = fs.readFileSync(readmePath, "utf-8");
+
 
 // Replace the placeholder section
 const newReadme = readme.replace(

@@ -13,8 +13,8 @@ This is a serverless joke generation API that:
 
 ## Latest Jokes
 
-<!-- RECENT_JOKES_START -->
+<!-- JOKES_START -->
 
 _No jokes yet — be the first to trigger the API!_
 
-<!-- RECENT_JOKES_END -->
+<!-- JOKES_END -->
