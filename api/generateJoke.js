@@ -34,7 +34,10 @@ async function generateJoke(userId) {
     messages: [
       {
         role: "user",
-        content: `Tell me exactly one short, funny joke using the words: ${words.join(", ")}. Respond only with the joke — no introduction, no formatting, no extra text. Just the Joke and then the punchline.`,
+        content: `Using the words: ${words.join(", ")}, create a short and funny joke.
+                  Return the response **only** as a valid JSON object, with this exact format:
+                  {"joke": "Your joke here"}
+                  🚫 No explanation, no preamble, no additional text.`
       },
     ],
   });
