@@ -12,15 +12,6 @@ jobs:
       - name: 📥 Checkout repo
         uses: actions/checkout@v3
 
-      - name: Debug current directory and list files
-        run: |
-          echo "Current directory:"
-          pwd
-          echo "Files in root:"
-          ls -la
-          echo "Files in api/"
-          ls -la api/
-
       - name: 🟢 Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -32,10 +23,7 @@ jobs:
       - name: 🧠 Generate a new joke
         run: node api/generateJoke.js
         env:
-          HF_API_KEY: ${{ secrets.HF_API_KEY }}
-
-      - name: Check files in root
-        run: ls -la
+          HF_API_KEY: ${{ secrets.HF_API_TOKEN }}
 
       - name: 📝 Update README with latest jokes
         run: node api/updateReadme.js
