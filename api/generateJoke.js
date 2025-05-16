@@ -35,7 +35,7 @@ async function generateJoke(userId) {
                   Only respond with the JSON object.`;
 
   const response = await axios.post(
-  "https://api-inference.huggingface.co/models/FaisalGh/jokes-modela",
+  "https://api-inference.huggingface.co/models/gpt2",
   { 
     inputs: prompt 
   },
