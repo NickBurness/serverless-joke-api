@@ -23,7 +23,7 @@ jobs:
       - name: 🧠 Generate Joke
         env:
           HF_API_TOKEN: ${{ secrets.HF_API_TOKEN }}
-        run: node api/generateJoke.js "auto-cron"
+        run: node api/generateJokeRunner.js "auto-cron"
 
       - name: 📝 Update README with latest jokes
         run: node api/updateReadme.js
