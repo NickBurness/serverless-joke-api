@@ -28,21 +28,26 @@ async function generateJoke(userId) {
 
   const client = new InferenceClient(HF_API_TOKEN);
 
-  const chatCompletion = await client.chatCompletion({
-    provider: "novita",
-    model: "deepseek-ai/DeepSeek-R1",
-    messages: [
-      {
-        role: "user",
-        content: `Using the words: ${words.join(", ")}, create a short and funny joke.
-                  Return the response **only** as a valid JSON object, with this exact format:
-                  {"joke": "Your joke here"}
-                  🚫 No explanation, no preamble, no additional text.`
-      },
-    ],
+  const prompt = `You are a joke bot. Only output a JSON object like this:
+                  {"joke": "Here goes the joke using all words."}
+                  Do not add commentary or explanation.
+                  Now, write a joke that includes these words: ${words.join(", ")}.
+                  Only respond with the JSON object.`;
+
+  const response = await axios.post(
+  "https://api-inference.huggingface.co/models/chavinlo/gpt4-x-alpaca",
+  { 
+    inputs: prompt 
+  },
+  {
+    headers: {
+      Authorization: `Bearer ${process.env.HF_API_TOKEN}`,
+      "Content-Type": "application/json",
+    },
   });
 
-  const joke = chatCompletion.choices?.[0]?.message?.content?.trim();
+
+  const joke = response.choices?.[0]?.message?.content?.trim();
   if (!joke) throw new Error("No joke returned from DeepSeek-R1");
 
   // Store the new joke in jokes.json
