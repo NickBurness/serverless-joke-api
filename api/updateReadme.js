@@ -26,6 +26,7 @@ const markdown = latest
 
 // Load the README
 const readmePath = path.resolve(process.cwd(), "README.md");
+console.log(readmePath)
 const readme = fs.readFileSync(readmePath, "utf-8");
 
 
