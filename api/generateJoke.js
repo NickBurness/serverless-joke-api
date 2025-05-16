@@ -34,7 +34,7 @@ async function generateJoke(userId) {
     messages: [
       {
         role: "user",
-        content: `Tell me a funny joke using the words: ${words.join(", ")}`,
+        content: `Tell me exactly one short, funny joke using the words: ${words.join(", ")}. Respond only with the joke — no introduction, no formatting, no extra text. Just the Joke and then the punchline.`,
       },
     ],
   });
