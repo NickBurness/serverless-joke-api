@@ -1,0 +1,12 @@
+{
+  "name": "joke-api-serverless",
+  "version": "1.0.0",
+  "main": "generateJoke.js",
+  "scripts": {
+    "generate": "node api/generateJoke.js",
+    "update-readme": "node api/updateReadme.js"
+  },
+  "dependencies": {
+    "axios": "^1.4.0"
+  }
+}
