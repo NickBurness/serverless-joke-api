@@ -1,3 +1,5 @@
+import { InferenceClient } from "@huggingface/inference";
+
 const fs = require("fs");
 const axios = require("axios");
 const { getRandomWords, canGenerateJokeForUser } = require("./helpers");
@@ -19,7 +21,6 @@ async function generateJoke(userId) {
     return { message: "Rate limit exceeded. Please try again later." };
   }
 
-
   try {
   const words = getRandomWords();
   const prompt = `You are a joke bot. Only output a JSON object like this:
@@ -28,20 +29,20 @@ async function generateJoke(userId) {
                   Now, write a joke that includes these words: ${words.join(", ")}.
                   Only respond with the JSON object.`;
 
-  const response = await axios.post(
-  "https://api-inference.huggingface.co/models/gpt2",
-  { 
-    inputs: prompt 
-  },
-  {
-    headers: {
-      Authorization: `Bearer ${process.env.HF_API_TOKEN}`,
-      "Content-Type": "application/json",
-    },
+  const client = new InferenceClient(process.env.HF_API_TOKEN);
+
+  const chatCompletion = await client.chatCompletion({
+    provider: "hf-inference",
+    model: "Qwen/Qwen3-235B-A22B",
+    messages: [
+        {
+            role: "user",
+            content: prompt,
+        },
+    ],
   });
 
-
-  const joke = response.choices?.[0]?.message?.content?.trim();
+  const joke = chatCompletion.choices?.[0]?.message?.content?.trim();
   if (!joke) throw new Error("No joke returned from DeepSeek-R1");
 
   // Store the new joke in jokes.json
